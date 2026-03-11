@@ -82,15 +82,12 @@ export const getResources = async (topic: string) => {
   return response.text;
 };
 
-export const generateThumbnailIdeas = async (title: string) => {
+export const generateThumbnailPrompt = async (title: string) => {
   const response = await ai.models.generateContent({
     model: "gemini-3.1-pro-preview",
-    contents: `اقترح 3 أفكار لتصميم صورة مصغرة (Thumbnail) جذابة لفيديو بعنوان: "\${title}". 
-    صف العناصر التي يجب أن تظهر في الصورة، الألوان، والنصوص المحفزة. 
-    أيضاً، ابحث عن أمثلة لصور مصغرة ناجحة لنفس الموضوع على يوتيوب لوصفها كمصدر إلهام.`,
-    config: {
-      tools: [{ googleSearch: {} }]
-    }
+    contents: `اكتب برومبت (Prompt) مفصل واحترافي باللغة الإنجليزية لتصميم صورة مصغرة (Thumbnail) جذابة لفيديو يوتيوب بعنوان: "${title}". 
+    البرومبت يجب أن يكون جاهزاً للاستخدام في أدوات توليد الصور مثل Midjourney أو DALL-E. 
+    ركز على العناصر البصرية، الإضاءة، الألوان، والأسلوب الفني لجعل الصورة جذابة جداً للنقر (Clickbait أخلاقي).`,
   });
   return response.text;
 };

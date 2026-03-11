@@ -1,19 +1,23 @@
 import React from 'react';
-import { Image as ImageIcon, RefreshCw, Loader2, Sparkles } from 'lucide-react';
+import { Image as ImageIcon, RefreshCw, Loader2, Sparkles, Copy } from 'lucide-react';
 import Markdown from 'react-markdown';
 import { motion } from 'motion/react';
 
-interface ThumbnailSectionProps {
-  thumbnailIdeas: string;
+interface ThumbnailPromptSectionProps {
+  thumbnailPrompt: string;
   loadingThumbnail: boolean;
   fetchThumbnail: () => void;
 }
 
-export const ThumbnailSection: React.FC<ThumbnailSectionProps> = ({
-  thumbnailIdeas,
+export const ThumbnailPromptSection: React.FC<ThumbnailPromptSectionProps> = ({
+  thumbnailPrompt,
   loadingThumbnail,
   fetchThumbnail
 }) => {
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(thumbnailPrompt);
+  };
+
   return (
     <section id="thumbnail-section" className="bg-white border border-zinc-100 rounded-[3rem] shadow-xl overflow-hidden h-full flex flex-col">
       <div className="px-10 py-8 border-b border-zinc-50 flex items-center justify-between bg-zinc-50/30">
@@ -22,8 +26,8 @@ export const ThumbnailSection: React.FC<ThumbnailSectionProps> = ({
             <ImageIcon size={28} />
           </div>
           <div>
-            <h3 className="text-3xl font-black text-zinc-900 tracking-tight">تصميم الغلاف</h3>
-            <p className="text-zinc-500 font-bold text-sm">أفكار الصور المصغرة الجذابة</p>
+            <h3 className="text-3xl font-black text-zinc-900 tracking-tight">برومبت الغلاف</h3>
+            <p className="text-zinc-500 font-bold text-sm">برومبت جاهز لأدوات توليد الصور</p>
           </div>
         </div>
         <motion.button 
@@ -47,13 +51,26 @@ export const ThumbnailSection: React.FC<ThumbnailSectionProps> = ({
               </div>
             </div>
             <div className="text-center space-y-2">
-              <p className="text-2xl font-black text-zinc-900">جاري التحليل...</p>
-              <p className="text-zinc-400 font-bold">نحلل أكثر الصور المصغرة نجاحاً في مجالك</p>
+              <p className="text-2xl font-black text-zinc-900">جاري صياغة البرومبت...</p>
+              <p className="text-zinc-400 font-bold">نجهز لك برومبت احترافي لتصميم غلاف جذاب</p>
             </div>
           </div>
         ) : (
-          <div className="markdown-body prose prose-zinc max-w-none prose-lg prose-p:text-zinc-600 prose-headings:text-zinc-900">
-            <Markdown>{thumbnailIdeas}</Markdown>
+          <div className="space-y-4">
+            <div className="markdown-body prose prose-zinc max-w-none prose-lg prose-p:text-zinc-600 prose-headings:text-zinc-900">
+              <Markdown>{thumbnailPrompt}</Markdown>
+            </div>
+            {thumbnailPrompt && (
+              <motion.button
+                onClick={copyToClipboard}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full flex items-center justify-center gap-2 bg-purple-100 text-purple-700 py-3 rounded-2xl font-black hover:bg-purple-200 transition-all"
+              >
+                <Copy size={18} />
+                نسخ البرومبت
+              </motion.button>
+            )}
           </div>
         )}
       </div>

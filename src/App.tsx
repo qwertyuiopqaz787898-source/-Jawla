@@ -25,7 +25,7 @@ import {
   MoreVertical,
   TrendingUp
 } from 'lucide-react';
-import { generateIdeas, generateScript, getResources, generateThumbnailIdeas, textToSpeech, generateImage } from './services/geminiService';
+import { generateIdeas, generateScript, getResources, generateThumbnailPrompt, textToSpeech, generateImage } from './services/geminiService';
 
 // Components
 import { Header } from './components/Header';
@@ -33,7 +33,7 @@ import { IdeaCard } from './components/IdeaCard';
 import { ScriptSection } from './components/ScriptSection';
 import { VoiceoverSection } from './components/VoiceoverSection';
 import { ResourcesSection } from './components/ResourcesSection';
-import { ThumbnailSection } from './components/ThumbnailSection';
+import { ThumbnailPromptSection } from './components/ThumbnailSection';
 
 type Step = 'ideas' | 'production';
 
@@ -89,7 +89,7 @@ export default function App() {
   const [script, setScript] = useState<string>('');
   const [isEditingScript, setIsEditingScript] = useState<boolean>(false);
   const [resources, setResources] = useState<string>('');
-  const [thumbnailIdeas, setThumbnailIdeas] = useState<string>('');
+  const [thumbnailPrompt, setThumbnailPrompt] = useState<string>('');
   
   const [audioLoading, setAudioLoading] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -161,8 +161,8 @@ export default function App() {
     if (!selectedIdea) return;
     setLoading(prev => ({ ...prev, thumbnail: true }));
     try {
-      const data = await generateThumbnailIdeas(selectedIdea.title);
-      setThumbnailIdeas(data);
+      const data = await generateThumbnailPrompt(selectedIdea.title);
+      setThumbnailPrompt(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -175,7 +175,7 @@ export default function App() {
     setView('production');
     setScript('');
     setResources('');
-    setThumbnailIdeas('');
+    setThumbnailPrompt('');
     fetchScript(idea.title);
   }, [fetchScript]);
 
@@ -209,9 +209,9 @@ export default function App() {
   useEffect(() => {
     if (view === 'production' && selectedIdea) {
       if (!resources && !loading.resources) fetchResources();
-      if (!thumbnailIdeas && !loading.thumbnail) fetchThumbnail();
+      if (!thumbnailPrompt && !loading.thumbnail) fetchThumbnail();
     }
-  }, [view, selectedIdea, resources, thumbnailIdeas, loading.resources, loading.thumbnail, fetchResources, fetchThumbnail]);
+  }, [view, selectedIdea, resources, thumbnailPrompt, loading.resources, loading.thumbnail, fetchResources, fetchThumbnail]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F9F9F8] font-sans text-right selection:bg-orange-100" dir="rtl">
@@ -490,8 +490,8 @@ export default function App() {
                     fetchResources={fetchResources}
                   />
 
-                  <ThumbnailSection 
-                    thumbnailIdeas={thumbnailIdeas}
+                  <ThumbnailPromptSection 
+                    thumbnailPrompt={thumbnailPrompt}
                     loadingThumbnail={loading.thumbnail || false}
                     fetchThumbnail={fetchThumbnail}
                   />
